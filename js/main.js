@@ -23,6 +23,17 @@ window.addEventListener("scroll", function () {
     }
 });
 
+window.addEventListener('scroll', function() {
+    var rodape = document.getElementById('rodape');
+    var alturaPagina = document.body.scrollHeight;
+    var alturaJanela = window.innerHeight;
+    var posicaoAtual = window.scrollY;
 
-  
+    // Se o scroll atingir o final da página, mostra o rodapé
+    if (alturaPagina - alturaJanela === posicaoAtual) {
+        rodape.classList.remove('hidden');
+    } else {
+        rodape.classList.add('hidden');
+    }
+});
 

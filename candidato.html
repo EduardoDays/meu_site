@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="csss.css">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Deposito de curriculos</title>
+</head>
+<body>
+    <nav id="navbar">
+        <div id="navbar-container">
+            <h1 class="logo">E&E JOBS</h1>
+            <ul id="navbar-items">
+                <li><a href="index.html">Início</a></li>
+            </ul>
+        </div>
+    </nav>
+    <h2>Adicione aqui seu arquivo</h2>
+    <form id="uploadForm">
+        <br>
+        <br>
+        <br>
+        <input type="text" id="nome" placeholder="Nome do Arquivo" required />
+        <input type="text" id="nomeCompleto" placeholder="Nome Completo" required />
+        <input type="email" id="gmail" placeholder="Gmail" required />
+        <input type="file" id="arquivo" required />
+        <button type="submit">Upload</button>
+    </form>
+
+    <h2>Lista de Arquivos</h2>
+    <ul id="fileList"></ul>
+
+    <h2>Pré-visualização de Arquivo</h2>
+    <div id="filePreview"></div>
+
+    <script src="script.js"></script>
+    <footer id="footer">
+        <p>Copyright 2024 - Todos os direitos reservados.</p>
+        <p>Feito por Eduardo Dias | Enzo Montanaro.</p>
+        <p>trabalho de uso acadêmico sem fins lucrativos</p>
+    </footer>
+    
+</body>
+</html>
+
+
+<script>
+   document.addEventListener('DOMContentLoaded', () => {
+    const uploadForm = document.getElementById('uploadForm');
+    const fileList = document.getElementById('fileList');
+    const filePreview = document.getElementById('filePreview');
+
+    const apiBaseUrl = 'https://localhost:7164/Arquivo';
+
+    fetchFiles();
+
+    uploadForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const nome = document.getElementById('nome').value;
+        const nomeCompleto = document.getElementById('nomeCompleto').value;
+        const gmail = document.getElementById('gmail').value;
+        const file = document.getElementById('arquivo').files[0];
+
+        if (!file) {
+            alert("Selecione um arquivo.");
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onloadend = async () => {
+            const base64String = reader.result.split(',')[1];
+            const arquivo = {
+                nome: nome,
+                nomeCompleto: nomeCompleto,
+                gmail: gmail,
+                arquivos: base64String
+            };
+
+            const response = await fetch(apiBaseUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(arquivo)
+            });
+
+            if (response.ok) {
+                alert('Seu arquivo foi adicionado!');
+                fetchFiles();
+            } else {
+                alert('não foi posivel  adicionar o arquivo.');
+            }
+        };
+        reader.readAsDataURL(file);
+    });
+
+    async function fetchFiles() {
+        const response = await fetch(apiBaseUrl);
+        const files = await response.json();
+        fileList.innerHTML = '';
+
+        files.forEach(file => {
+            const listItem = document.createElement('li');
+            listItem.innerHTML = `
+                ${file.nome} - ${file.nomeCompleto} - ${file.gmail}
+                <button onclick="viewFile('${file.arquivos}')">View</button>
+                <button onclick="deleteFile(${file.id})">Delete</button>
+            `;
+            fileList.appendChild(listItem);
+        });
+    }
+
+    window.viewFile = (base64String) => {
+        const objectElement = document.createElement('object');
+        objectElement.data = 'data:application/pdf;base64,' + base64String;
+        objectElement.type = 'application/pdf';
+        objectElement.width = '100%';
+        objectElement.height = '600px';
+
+        filePreview.innerHTML = '';
+        filePreview.appendChild(objectElement);
+    };
+
+    window.deleteFile = async (id) => {
+        const response = await fetch(`${apiBaseUrl}/${id}`, {
+            method: 'DELETE'
+        });
+
+        if (response.ok) {
+            alert(' Seu arquivo foi excluido !');
+            fetchFiles();
+        } else {
+            alert('Não foi posivel  excluir o arquivo.');
+        }
+    };
+});
+
+</script>
