@@ -78,8 +78,7 @@ a {
     display: flex;
     justify-content: center;
     align-items: center;
-    color: #201e1e;
-    background: url('img/fundo.jpg') no-repeat center center/cover;
+    background-image: url('/img/fundo.jpg') no-repeat center center/cover;
 
     /* Overlay */
     background-color: rgba(0,0,0,0.5);
@@ -142,6 +141,7 @@ a {
    
 }
 
+
 .feature-form-top {
     display: flex;
     flex-direction: column;
@@ -161,6 +161,8 @@ a {
     text-align: justify;
     margin-top: 50px;
 }
+
+
 
 .feature-form-bot {
     display: flex;
@@ -321,3 +323,28 @@ footer {
     background-color: #333;
 }
 
+#ref-container {
+    background-color: #232222;
+    width: 100%;
+    margin: auto;
+    display: flex;
+    grid-template-columns: repeat(2, 1fr);
+    grid-column-gap: 50px;
+    align-items: center;
+   
+}
+
+.feature-ref {
+    display: flex;
+    flex-direction: column;
+    background: #333;
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    margin-left: 20px;
+    margin-right: 20px;
+    color: #eee;
+    width: 50%;
+}
